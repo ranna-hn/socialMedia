@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('post_attachments', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('post_id')->constrained('posts');
+            $table->string('name', 255);//test.jpg
+            $table->string('path', 255);//storage/attachments/test.jpg
+            $table->string('mime', 255);//image/jpeg/video/mp4
+            $table->foreignId('created_by')->constrained('users');
+            $table->timestamp('created_at')->nullable();
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('post_attachments');
