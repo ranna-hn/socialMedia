@@ -27,6 +27,7 @@ function submitCoverImage() {
     imagesForm.post(route('profile.updateCover'),{
         onSuccess: (user) => {
         console.log(user)
+        showNotification.value = true;
         cancelCoverImage()
         setTimeout(() => {
             showNotification.value = false;
@@ -127,7 +128,7 @@ const showNotification = ref(true);
 
 
                 <div class="flex">
-                  <img src="/storage/profilM1.png" alt="Profile" class="ml-[48px] w-[120px] h-[120px] -mt-[64px] rounded-full " />
+                  <img src="/storage/default_avatar.png" alt="Profile" class="ml-[48px] w-[120px] h-[120px] -mt-[64px] rounded-full " />
 
                 <div class="flex justify-between items-center flex-1 p-4 ">
                   <h2 class="font-bold text-lg">{{ user.name }}</h2>

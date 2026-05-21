@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -71,11 +72,11 @@ class ProfileController extends Controller
         $cover = $data['cover'] ?? null;
 
         if($cover) {
+            if($user->cover_path) {
+                Storage::disk('public')->delete($user->cover_path);
+            }
 
-            // $folderName = 'user-'.auth()->user()->id;
-            // $path = $cover->storeAs($folderName);
-
-            $path =$cover->store('avatars/'.$user->id, 'public');
+            $path =$cover->store('user-'.$user->id, 'public');
 
             $user->update(['cover_path' => $path]);
             
