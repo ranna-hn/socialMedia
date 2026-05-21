@@ -6,7 +6,7 @@ import TabItem from './Partials/TabItem.vue'
 import Edit from './Edit.vue'
 import { usePage, useForm} from '@inertiajs/vue3'
 import PrimaryButton from '../../Components/PrimaryButton.vue'
-import {XMarkIcon, CheckCircleIcon} from '@heroicons/vue/24/outline'
+import {XMarkIcon, CheckCircleIcon, CameraIcon} from '@heroicons/vue/24/outline'
 
 const imagesForm = useForm({
   avatar: null,
@@ -16,19 +16,18 @@ const imagesForm = useForm({
 
 
 const coverImageSrc = ref('')
+const avatarImageSrc = ref('')
 
-function cancelCoverImage() {
+function resetCoverImage() {
     imagesForm.cover= null;
     coverImageSrc.value = null;
 }
 
 function submitCoverImage() {
-    console.log(imagesForm.cover)
-    imagesForm.post(route('profile.updateCover'),{
+    imagesForm.post(route('profile.updateImages'),{
         onSuccess: (user) => {
         console.log(user)
-        showNotification.value = true;
-        cancelCoverImage()
+        resetCoverImage()
         setTimeout(() => {
             showNotification.value = false;
         }, 3000);
@@ -49,6 +48,9 @@ const props = defineProps({
     status: {
         type: String,
     },
+    success: {
+        type: String,
+    },
     user:{
       type:Object,
     }
@@ -56,7 +58,6 @@ const props = defineProps({
 });
 
 function onCoverChange(event) {
-    console.log(event);
     imagesForm.cover = event.target.files[0];
     if(imagesForm.cover) {
         const reader= new FileReader()
@@ -70,6 +71,39 @@ function onCoverChange(event) {
 
 const showNotification = ref(true);
 
+// avatar:
+
+function onAvatarChange(event) {
+    imagesForm.avatar = event.target.files[0];
+    if(imagesForm.avatar) {
+        const reader= new FileReader()
+        reader.onload= () => {
+            avatarImageSrc.value = reader.result;
+        }
+        reader.readAsDataURL(imagesForm.avatar)
+    }
+    
+}
+
+function resetAvatarImage() {
+    imagesForm.avatar= null;
+    avatarImageSrc.value = null;
+}
+
+function submitAvatarImage() {
+    showNotification.value = true
+    imagesForm.post(route('profile.updateImages'),{
+        onSuccess: (user) => {
+        console.log(user)
+        resetAvatarImage()
+        setTimeout(() => {
+            showNotification.value = false;
+        }, 3000);
+    },
+    
+    })
+}
+
 
 
 
@@ -79,16 +113,17 @@ const showNotification = ref(true);
     <AuthenticatedLayout>
         <div class="max-w-[768px] mx-auto h-full overflow-auto">
             <div
-                    v-show="showNotification && status === 'cover-image-update'"
-                    class="my-2 py-2 px-3 text-sm font-medium bg-emerald-500 text-white rounded-lg">
-                    Your cover image has been updated successfully.
-                </div>
+                v-show="showNotification && success"
+                class="my-2 py-2 px-3 text-sm font-medium bg-emerald-500 text-white rounded-lg">
+                {{ success }}
+            </div>
 
             <div
                     v-show="errors.cover"
                     class="my-2 py-2 px-3 text-sm font-medium bg-red-500 text-white rounded-lg">
                     {{ errors.cover }}
                 </div>
+            
 
             <div class="group relative bg-white">
                 
@@ -110,7 +145,7 @@ const showNotification = ref(true);
                     <div v-else class="flex gap-2 bg-white p-2 rounded-lg shadow-md opacity-0 group-hover:opacity-100">
 
                         <button
-                        @click="cancelCoverImage"
+                        @click="resetCoverImage"
                         class= "bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs flex  items-center opacity-0 group-hover:opacity-100 rounded-lg shadow-md">
                     <XMarkIcon class="w-6 h-6  " />
                     Cancel
@@ -118,17 +153,46 @@ const showNotification = ref(true);
 
                     <button 
                     @click="submitCoverImage"
-                    class= "bg-black  text-gray-800 py-1 px-2 text-xs flex items-center opacity-0 group-hover:opacity-100  text-white rounded-lg shadow-md">
+                    class= "bg-black  text-white py-1 px-2 text-xs flex items-center opacity-0 group-hover:opacity-100 rounded-lg shadow-md">
                     <CheckCircleIcon class="w-6 h-6  mr-2" />
                     Submit
                     </button>
                 </div>
                 </div>
-                
 
+                <!-- avatar -->
 
                 <div class="flex">
-                  <img src="/storage/default_avatar.png" alt="Profile" class="ml-[48px] w-[120px] h-[120px] -mt-[64px] rounded-full " />
+                  <div class=" flex items-center justify-center relative group/avatar -mt-[64px] ml-[48px] w-[120px] h-[120px] rounded-full " >
+                    <img
+                        :src="avatarImageSrc || user.avatar_url || '/storage/default_avatar.png'"
+                        alt="Profile"
+                        class="rounded-full w-full h-full object-cover"
+                    />
+
+                    <button v-if="!avatarImageSrc" 
+                    class= "absolute left-0 top-0 right-0 bottom-0 bg-black/50 text-white opacity-0 flex items-center justify-center group-hover/avatar:opacity-100 transition rounded-full cursor-pointer">
+                    <CameraIcon class="w-8 h-8 " />
+    
+                        <input type="file" class="absolute left-0 top-0 bottom-0 right-0 opacity-0 cursor-pointer"  @change="onAvatarChange" />
+                    </button>
+
+                    <div v-else class="absolute top-1 right-0 flex flex-col gap-2 rounded-lg shadow-md">
+
+                        <button
+                        @click="resetAvatarImage"
+                        class= "w-7 h-7 flex items-center justify-center bg-red-500/80 rounded-full shadow-md text-white cursor-pointer">
+                        <XMarkIcon class="w-5 h-5  " />
+                        </button>
+
+                        <button 
+                        @click="submitAvatarImage"
+                        class= "w-7 h-7 flex items-center justify-center bg-emerald-500/80 rounded-full shadow-md text-white cursor-pointer">
+                        <CheckCircleIcon class="w-5 h-5" />
+                        </button>
+                    </div>
+                </div> 
+                  
 
                 <div class="flex justify-between items-center flex-1 p-4 ">
                   <h2 class="font-bold text-lg">{{ user.name }}</h2>
