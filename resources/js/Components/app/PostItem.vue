@@ -1,5 +1,5 @@
 <script setup>
-import { Disclosure, DisclosureButton } from '@headlessui/vue';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 
 defineProps({
     post: Object
@@ -18,7 +18,7 @@ function isImage(attachment) {
             <div class="flex items-center gap-3 mb-2">
                 <a href="javascript:void(0)">
                     <img
-                        :src="post.user.avatar"
+                        :src="post.user.avatar_url"
                         alt="Avatar"
                         class="w-10 h-10 rounded-full hover:ring-2 hover:ring-blue-500 transition-all"
                     />
@@ -46,13 +46,18 @@ function isImage(attachment) {
 
             <div class="mb-3">
                 <Disclosure v-slot="{ open }">
-                <div v-html="open ? post.body : post.body.substring(0, 200)" />
+                <div v-if="!open"  v-html="post.body.substring(0, 200)" />
 
+                <template v-if="post.body.length > 200 ">
+                    <DisclosurePanel>
+                    <div v-html="post.body" />
+                </DisclosurePanel>
                     <div class="flex justify-end">
                         <DisclosureButton class="mt-2 text-sm text-blue-500 hover:underline">
                             {{ open ? 'Show less' : 'Read more' }}
                         </DisclosureButton>
                     </div>
+                </template>
                     </Disclosure>
 
                 <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
