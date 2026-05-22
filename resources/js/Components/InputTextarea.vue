@@ -32,17 +32,26 @@ onMounted(() => {
 
 defineExpose({ focus: () => input.value.focus() });
 
-
-function onInputChange($event) {
-    emit('update:modelValue', $event.target.value)
+function adjustHeight() {
 
     if (props.autoResize) {
         input.value.style.height = 'auto';
         input.value.style.height = input.value.scrollHeight + 'px';
     }
-
-    
 }
+
+function onInputChange($event) {
+    emit('update:modelValue', $event.target.value)
+    adjustHeight()
+}
+
+
+onMounted(() => {
+    if (props.autoResize) {
+        adjustHeight()
+    }
+})
+
 </script>
 
 <template>

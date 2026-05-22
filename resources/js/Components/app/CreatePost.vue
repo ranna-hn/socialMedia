@@ -39,7 +39,7 @@ function submit(){
             
                 </button>
 
-                <button @click="submit" type="submit" class="rounded-md bg-lime-900 px-3 py-2 text-sm font-semibold text-white shadow-xso              hover:bg-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2
+                <button @click="submit" type="submit" class="rounded-md bg-lime-900 px-3 py-2 text-sm font-semibold text-white shadow-xsover:bg-lime-800 hover:bg-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2
                 focus-visible:outline-lime-300">
                 submit
                 </button>

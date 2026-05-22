@@ -23,7 +23,6 @@ defineProps({
     <Head title="MyWebsite ecological" />
 
     <AuthenticatedLayout>
-        <!-- <pre>{{ posts }}</pre> -->
 
         <div class="grid lg:grid-cols-12 gap-3 p-4 h-full ">
 
