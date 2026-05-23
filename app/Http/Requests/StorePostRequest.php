@@ -31,10 +31,10 @@ class StorePostRequest extends FormRequest
 
 
     protected function prepareForValidation(): void
-       
     {
         $this->merge([
             'user_id' => Auth::id(),
+            'body'=>$this->input('body') ?: '',
         ]);
     }
 

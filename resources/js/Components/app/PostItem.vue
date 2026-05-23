@@ -3,6 +3,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel,  Menu, MenuButton, MenuI
 import { PencilIcon, TrashIcon, EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 import PostUserHeader from './PostUserHeader.vue'
 import {router} from '@inertiajs/vue3';
+import {isImage} from '@/helpers.js';
 
 
 const props = defineProps({
@@ -10,11 +11,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['editClick']);
-
-function isImage(attachment) {
-    const mime = attachment.mime.split('/');
-    return mime[0] === 'image';
-}
 
 function openEditModal() {
     emit('editClick',props.post);

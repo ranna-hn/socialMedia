@@ -1,21 +1,22 @@
 <script setup>
 import { ref } from 'vue';
-import InputTextarea from '../InputTextarea.vue';
-import { useForm } from '@inertiajs/vue3';
+import { usePage} from '@inertiajs/vue3';
+import PostModal from './PostModal.vue';
 
-const postCreating = ref(false);
+const authUser = usePage().props.auth.user;
 
-const newPostForm =useForm({
+const showModal = ref(false);
+
+const newPost =ref({
+    id: null,
     body: '',
+    user: authUser,
 })
 
-function submit(){
-    newPostForm.post(route('posts.create'),{
-        onSuccess: () => {
-            newPostForm.reset()
-        }
-    })
-    
+
+
+function showCreatePostModal(){
+    showModal.value = true;
 }
 
 </script>
@@ -23,13 +24,13 @@ function submit(){
 <template>
     <div class="p-4 rounded-lg border bg-white shadow mb-3">
 
-        <InputTextarea @click="postCreating =true" 
-        class="mb-3 w-full" 
-        :rows="1"
-        placeholder="What's on your mind?"
-        v-model="newPostForm.body"
-        />
-            <div v-if="postCreating" class="flex gap-2 justify-center">
+        <div @click="showCreatePostModal" 
+        class="py-2 px-3 border-2 rounded-md border-gray-300 text-gray-600 shadow-sm mb3 w-full" 
+        :rows="1">
+            What's in Your mind?
+        </div>
+
+            <!-- <div class="flex gap-2 justify-center">
 
                 <button type="button" class=" relative rounded-md bg-lime-900 px-3 py-2 text-sm font-semibold text-white shadow-xs
                 hover:bg-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2
@@ -43,9 +44,9 @@ function submit(){
                 focus-visible:outline-lime-300">
                 submit
                 </button>
-            </div>
+            </div> -->
 
-       
 
+        <PostModal :post="newPost" v-model="showModal"/>
     </div>
 </template>
