@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 
+
 class PostController extends Controller
 {
     
@@ -137,4 +138,13 @@ class PostController extends Controller
 
         return back();
     }
+
+
+    public function downloadAttachment(PostAttachment $attachment)
+    {
+        // a faire check permission pour enregister un attachment
+        return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
+        
+        
+        }
 }

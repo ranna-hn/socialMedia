@@ -30,5 +30,8 @@ Route::delete('/post/{post}', [PostController::class, 'destroy'])->middleware('a
 ->name('posts.destroy');
 
 
+Route::get('/post/download/{attachment}', [PostController::class, 'downloadAttachment'])->middleware('auth')
+->name('posts.download');
+
 
 require __DIR__.'/auth.php';

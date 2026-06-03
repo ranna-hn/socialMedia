@@ -4,7 +4,7 @@ import { PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon } from '
 import PostUserHeader from './PostUserHeader.vue'
 import {router} from '@inertiajs/vue3';
 import {isImage} from '@/helpers.js';
-import { HandThumbUpIcon, ChatBubbleLeftRightIcon } from '@heroicons/vue/24/outline';
+import { HandThumbUpIcon, ChatBubbleLeftRightIcon, DocumentIcon } from '@heroicons/vue/24/outline';
 
 
 const props = defineProps({
@@ -135,10 +135,11 @@ function deletePost() {
                             </div>
 
                             <!-- download -->
-                            <button class="z-20 opacity-0 group-hover:opacity-100 transition-all w-8 h-8 flex items-center justify-center text-gray-100 bg-gray-600 
+                            <a :href="route('posts.download', attachment.id)"
+                            class="z-20 opacity-0 group-hover:opacity-100 transition-all w-8 h-8 flex items-center justify-center text-gray-100 bg-gray-600 
                             rouded absolute right-1 top-2 cursor-pointer hover:bg-gray-800 duration-150 ease-in-out">
                                 <ArrowDownTrayIcon class="w-4 h-4" />
-                            </button>   
+                            </a>   
 
                             <img
                             v-if="isImage(attachment)"
@@ -147,12 +148,11 @@ function deletePost() {
                             class="object-contain aspect-square w-full h-full rounded"/>
 
                             <template v-else>
-                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                            </svg>
+                                <div class="flex flex-col items-center justify-center w-full h-full p-4 text-center">
+                           <DocumentIcon class="w-8 h-8 mb-3 justify-center items-center " />
 
                             <small>{{ attachment.name }}</small>
+                            </div>
                             </template>
                         </div>
                     </template>

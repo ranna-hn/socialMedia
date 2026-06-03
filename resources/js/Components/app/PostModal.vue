@@ -209,7 +209,7 @@ function undoDelete(myFile){
             >
                 <DialogPanel
                 class="w-full max-w-md transform overflow-hidden rounded bg-white text-left align-middle shadow-xl transition-all"
-                >
+                >c
                 <DialogTitle
                     as="h3"
                     class="flex items-center justify-between py-3 px-4 text-lg font-medium text-gray-900 bg-gray-100"

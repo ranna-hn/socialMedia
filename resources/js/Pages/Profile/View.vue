@@ -5,7 +5,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import TabItem from './Partials/TabItem.vue'
 import Edit from './Edit.vue'
 import { usePage, useForm} from '@inertiajs/vue3'
-import PrimaryButton from '../../Components/PrimaryButton.vue'
 import {XMarkIcon, CheckCircleIcon, CameraIcon} from '@heroicons/vue/24/outline'
 
 const imagesForm = useForm({
