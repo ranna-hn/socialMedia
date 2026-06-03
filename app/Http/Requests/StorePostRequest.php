@@ -36,7 +36,8 @@ class StorePostRequest extends FormRequest
             'attachments' => 'array|max:50',
             'attachments.*' =>[
                 'file',
-                File::types(self::$extensions)->max(10 * 1024),
+                File::types(self::$extensions),
+                'max:'. (50 * 1024), 
             ],
             'user_id' => [ 'integer'],
         ];
@@ -51,13 +52,15 @@ class StorePostRequest extends FormRequest
         ]);
     }
 
-    public function messages()
-    {
-        return [
-            'attachments.*' => 'Invalid file ',
-
-        ];
-    }
+        public function messages(): array
+{
+    return [
+        'attachments.max' => 'You can attach maximum 50 files.',
+        'attachments.*.file' => 'Invalid file',
+        'attachments.*.mimes' => 'Invalid file type',
+        'attachments.*.max' => 'File size must not exceed 50 MB.',
+    ];
+}
 
 
 }

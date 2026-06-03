@@ -59,6 +59,10 @@ const attachmentErrors = ref([]);
 
 const showExtensionsText = ref(false);
 
+const showSizeText = ref(false);
+const maxAttachmentSize = 50 * 1024 * 1024;
+
+
 const emit = defineEmits(['update:modelValue','hide'])
 
 const form = useForm({
@@ -96,6 +100,7 @@ function resetModel(){
     form.reset()
     attachmentFiles.value = []
     showExtensionsText.value = false;
+    showSizeText.value = false;
 
     attachmentErrors.value = [];
     if(props.post.attachments){
@@ -111,6 +116,10 @@ onMounted(() => {
 
 function submit()
 {
+    if(attachmentFiles.value.some(myFile => myFile.error)){
+        return;
+    }
+
     form.attachments = attachmentFiles.value.map(myFile => myFile.file)
     console.log(form)
     if (props.post.id){
@@ -154,23 +163,44 @@ function processErrors(errors){
 
 async function onAttachmentChoose($event) {
     showExtensionsText.value = false;
+    showSizeText.value = false;
+        attachmentErrors.value = [];
+    form.clearErrors();
+
     for(const file of $event.target.files){
         let part = file.name.split('.');
         let ext = part.pop().toLowerCase();
-        console.log(ext)
 
-        if(!attachmentExtensions.includes(ext)){
-           showExtensionsText.value = true;
+        const invalidExtension = !attachmentExtensions.includes(ext);
+        const invalidSize = file.size > maxAttachmentSize; 
+
+        if(invalidExtension){
+           showExtensionsText.value = true 
         }
+
+        if(invalidSize){
+            showSizeText.value = true;
+        }
+        let error = null;
+
+        if(invalidExtension){
+            error = 'Invalid file type';
+            
+        } else if(invalidSize){
+            error = 'File size must not exceed 50 MB.';
+        }
+
         const myFile = {
             file,
-            url: await readFile(file)
+            url: await readFile(file),
+            error
+
         }
         
-          myFile.src = await readFile(file)
+        myFile.src = await readFile(file)
         attachmentFiles.value.push(myFile)
-        
     }
+
     $event.target.value = null;
 }
 
@@ -268,13 +298,18 @@ function undoDelete(myFile){
                         </small>
 
                     </div>
+
+                    <div v-if="showSizeText" class="border-l-4 border-red-600 py-2 px-3 bg-red-100 mt-3 text-gray-800">
+                        File size must not exceed 50 MB.
+                    </div>
                 
                     <div class="grid gap-3 my-3" :class="[computedAttachments.length ===1 ? 'grid-cols-1' : 'grid-cols-2']">
                     <div
                         v-for="(myFile, ind) of computedAttachments">
                         <div 
-                        class="group bg-gray-100 aspect-square rounded flex flex-col 
-                        items-center justify-center  text-gray-500 relative border " :class="attachmentErrors[ind] ? 'border-red-500 border-2 ' : 'border-transparent'">
+                            class="group bg-gray-100 aspect-square rounded flex flex-col 
+                            items-center justify-center text-gray-500 relative border"
+                            :class="myFile.error || form.errors['attachments.' + ind] ? 'border-red-500 border-2' : 'border-transparent'">
 
 
                         <div v-if="myFile.deleted" class="absolute z-10 left-0 bottom-0 right-0 py-2 px-3 text-sm bg-black text-white flex justify-between items-center">
@@ -311,10 +346,10 @@ function undoDelete(myFile){
 
 
                         <small
-                            v-if="attachmentErrors[ind]"
+                            v-if="myFile.error || form.errors['attachments.' + ind]"
                             class="text-red-500 block mt-1"
                         >
-                            {{ attachmentErrors[ind] }}
+                            {{ myFile.error || form.errors['attachments.' + ind] }}
                         </small>
                     
 
