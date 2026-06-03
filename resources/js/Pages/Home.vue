@@ -26,7 +26,7 @@ defineProps({
 
         <div class="grid lg:grid-cols-12 gap-3 p-4 h-full ">
 
-            <div class="lg:col-span-3 lg:order-1 bg-lime-100 p-4 rounded-lg px-3 h-full overflow-hidden">
+            <div class="lg:col-span-3 lg:order-1 bg-white p-4 rounded-lg px-3 h-full overflow-hidden">
                 <GroupList />
             </div>
 
@@ -36,7 +36,7 @@ defineProps({
                     <PostList :posts="posts.data" class="flex-1" />
             </div>
 
-            <div class="lg:col-span-3 lg:order-3  bg-lime-100 p-4 rounded-lg px-3 h-full overflow-hidden">
+            <div class="lg:col-span-3 lg:order-3  bg-white p-4 rounded-lg px-3 h-full overflow-hidden">
                     <FollowingList />
             </div>
 

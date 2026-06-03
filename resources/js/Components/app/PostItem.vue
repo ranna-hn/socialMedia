@@ -41,7 +41,7 @@ function deletePost() {
                 <!-- template du headlessui -->
 
                    
-                        <Menu as="div" class="relative inline-block text-left">
+                        <Menu as="div" class="relative inline-block text-left z-10">
                         <div>
                             <MenuButton
                             class="w-8 h-8 rouded-full hover:bg-black/10 transition flex items-center justify-center rounded-full"
@@ -129,7 +129,7 @@ function deletePost() {
                         :key="attachment.id">
                         <div class="group gap-2 w-full bg-blue-100 aspect-square rounded items-center justify-center text-gray-500 relative ">
 
-                            <div v-if="ind===3" class="absolute left-0 top-0 right-0 bottom-0 z-10 bg-black/30 text-white
+                            <div v-if="ind===3 && post.attachments.length>4" class="absolute left-0 top-0 right-0 bottom-0 z-10 bg-black/30 text-white
                             flex items-center justify-center text-xl ">
                                 +{{ post.attachments.length- 4 }} more
                             </div>

@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { usePage} from '@inertiajs/vue3';
 import PostModal from './PostModal.vue';
 
+
 const authUser = usePage().props.auth.user;
 
 const showModal = ref(false);
@@ -11,6 +12,7 @@ const newPost =ref({
     id: null,
     body: '',
     user: authUser,
+    attachments: []
 })
 
 

@@ -9,7 +9,7 @@ defineProps({
 </script>
 
 <template>
-    <div class=" group flex items-start gap-3 p-3 rounded-lg hover:bg-amber-700 transition duration-150 ease-in-out cursor-pointer">
+    <div class=" group flex items-start gap-3 p-3 rounded-lg hover:bg-lime-100 transition duration-150 ease-in-out cursor-pointer">
         <div class="flex items-center gap-2 rounded-lg">
             <img :src="image" alt="title" class="w-14 h-14 object-cover rounded-full" />
             <div>

@@ -69,7 +69,56 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update($request->validated());
+        $user = $request->user();
+        $data = $request->validated();
+
+        DB::beginTransaction();
+
+        $allFilePaths = [];
+
+        try{
+            $post->update($data);
+
+            $deleted_ids = $data['deleted_file_ids'] ?? [];
+
+            //suprimer un attachment dans update/edit
+
+            $attachments= PostAttachment::where('post_id', $post->id)
+            ->whereIn('id', $deleted_ids)->get();
+
+            foreach($attachments as $attachment){
+                $attachment->delete();
+            }
+
+        /**
+         *  @var \Illuminate\Http\UploadedFile[] $file
+         */
+        
+        $files = $data['attachments'] ?? [];
+
+        foreach($files as $file) {
+            $path = $file->store('attachments/'.$post->id, 'public');
+            $allFilePaths[] = $path;
+
+            PostAttachment::create([
+                'post_id' => $post->id,
+                'name' => $file->getClientOriginalName(),
+                'path' => $path,
+                'mime' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'created_by' => $user->id
+                ]);
+        }
+        DB::commit();
+
+        } catch (\Exception $e) {
+            foreach($allFilePaths as $path){
+                Storage::disk('public')->delete($path);
+            }
+
+          DB::rollBack();
+          throw $e;
+        }
 
         return back();
     }
