@@ -1,17 +1,17 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel,  Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
-import { PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
+import { PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
 import PostUserHeader from './PostUserHeader.vue'
 import {router} from '@inertiajs/vue3';
 import {isImage} from '@/helpers.js';
-import { HandThumbUpIcon, ChatBubbleLeftRightIcon, DocumentIcon } from '@heroicons/vue/24/outline';
+import { HandThumbUpIcon, ChatBubbleLeftRightIcon } from '@heroicons/vue/24/outline';
 
 
 const props = defineProps({
     post: Object
 });
 
-const emit = defineEmits(['editClick']);
+const emit = defineEmits(['editClick', 'attachmentClick']);
 
 function openEditModal() {
     emit('editClick',props.post);
@@ -29,6 +29,11 @@ function deletePost() {
             },
         });
         }
+}
+
+
+function openAttachment(ind) {
+    emit('attachmentClick',props.post , ind);
 }
 </script>
 
@@ -127,7 +132,8 @@ function deletePost() {
                     <template
                         v-for="(attachment, ind) of post.attachments.slice(0, 4)"
                         :key="attachment.id">
-                        <div class="group gap-2 w-full bg-blue-100 aspect-square rounded items-center justify-center text-gray-500 relative ">
+                        <div @click="openAttachment( ind)"
+                         class="group gap-2 w-full bg-blue-100 aspect-square rounded items-center justify-center text-gray-500 relative  cursor-pointer">
 
                             <div v-if="ind===3 && post.attachments.length>4" class="absolute left-0 top-0 right-0 bottom-0 z-10 bg-black/30 text-white
                             flex items-center justify-center text-xl ">
@@ -148,12 +154,15 @@ function deletePost() {
                             class="object-contain aspect-square w-full h-full rounded"/>
 
                             <template v-else>
-                                <div class="flex flex-col items-center justify-center w-full h-full p-4 text-center">
-                           <DocumentIcon class="w-8 h-8 mb-3 justify-center items-center " />
+                                <div class="flex flex-col justify-center items-center w-full h-full">
+                            <PaperClipIcon class="w-10 h-10 mb-3 " />
 
-                            <small>{{ attachment.name }}</small>
-                            </div>
+                                <medium>{{ attachment.name }}</medium>
+
+                                </div>
+
                             </template>
+
                         </div>
                     </template>
                 </div>

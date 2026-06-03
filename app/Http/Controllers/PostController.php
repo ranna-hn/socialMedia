@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PostAttachment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 
 
@@ -143,7 +141,8 @@ class PostController extends Controller
     public function downloadAttachment(PostAttachment $attachment)
     {
         // a faire check permission pour enregister un attachment
-        return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
+        return response()->download(Storage::disk('public')
+        ->path($attachment->path), $attachment->name);
         
         
         }

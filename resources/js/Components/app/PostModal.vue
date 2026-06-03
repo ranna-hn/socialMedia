@@ -285,7 +285,6 @@ function undoDelete(myFile){
                     class="flex items-center justify-center w-full rounded-md bg-lime-900 px-3 py-2 text-sm font-semibold
                      text-white shadow-xs hover:bg-lime-800 focus-visible:outline-2 focus-visible:outline-offset-2
             focus-visible:outline-lime-300 relative"
-                    @click="submit"
                     >
                     <PaperClipIcon class="w-4 h-4 mr-2 cursor-pointer" />
                     Attach Files
