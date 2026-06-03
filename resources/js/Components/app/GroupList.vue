@@ -1,5 +1,5 @@
 <script setup>
-import GroupItem from '@/Components/App/GroupItem.vue';
+import GroupItem from '@/Components/app/GroupItem.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 
@@ -8,7 +8,7 @@ const searchKeyword = ref('');
 </script>
 
 <template>
-    <div class="px-3 rounded-lg mb-4 py-3 h-[500px] border shadow-2xl overflow-hidden flex flex-col ">
+    <div class="px-3 rounded-lg mb-4 py-3 h-[500px] border shadow-2xl overflow-hidden flex flex-col lg:h-full ">
         <h2 class="text-xl font-bold mb-4 px-3">My Groups</h2>
 
         <TextInput :model-value="searchKeyword"

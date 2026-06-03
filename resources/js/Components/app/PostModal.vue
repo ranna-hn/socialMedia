@@ -61,7 +61,8 @@ const emit = defineEmits(['update:modelValue'])
 
 const form = useForm({
     id: null,
-    body: ''
+    body: '',
+    attachments: []
 })
  
 const show =computed({
@@ -77,18 +78,23 @@ watch(() => props.post, () => {
 
 function closeModal() {
   show.value = false
-  form.reset()
-  attachmentFiles.value = []
+  resetModel()
 }
+
+function resetModel(){
+    form.reset()
+    attachmentFiles.value = []
+}
+
 
 function submit()
 {
+    form.attachments = attachmentFiles.value.map(myFile => myFile.file)
     if (form.id){
     form.put(route('posts.update', props.post.id), {
         preserveScroll: true,
         onSuccess: () => {
-            show.value = false
-            form.reset()
+            closeModal();
         }
     })
     }
@@ -97,8 +103,7 @@ function submit()
         form.post(route('posts.create'),{
             preserveScroll: true,
             onSuccess: () => {
-                show.value = false
-                form.reset()
+                closeModal();
             }
         })
     }
@@ -156,7 +161,7 @@ function removeFile(myFile){
     <teleport to="body">
         <TransitionRoot appear :show="show" as="template">
 
-        <Dialog as="div" @close="closeModal" class="relative z-10">
+        <Dialog as="div" @close="closeModal" class="relative z-50">
         <TransitionChild
             as="template"
             enter="duration-300 ease-out"
@@ -197,7 +202,7 @@ function removeFile(myFile){
                     <PostUserHeader :post="post" :show-time="false" class="mb-4"/>
                     <ckeditor :editor="editor" v-model="form.body" :config="editorConfig" ></ckeditor>  
 
-                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 my-3">
+                    <div class="grid gap-3 my-3" :class="[attachmentFiles.length ===1 ? 'grid-cols-1' : 'grid-cols-2']">
                     <template
                         v-for="(myFile, ind) of attachmentFiles">
 
@@ -219,7 +224,7 @@ function removeFile(myFile){
                             v-if="isImage(myFile.file)"
                             :src="myFile.url"
                             :alt="myFile.name"
-                            class="object-cover aspect-square"/>
+                            class="object-contain aspect-square"/>
 
                             <template v-else>
                            <PaperClipIcon class="w-8 h-8 mb-3" />

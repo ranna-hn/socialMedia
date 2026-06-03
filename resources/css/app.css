@@ -2,12 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
-#app{
-    height: 100%;
-  
+#app {
+  height: 100%;
 }
-
 
 .ck-content > blockquote,
 .ck-content > dl,
@@ -21,36 +18,12 @@
 .ck-content > hr,
 .ck-content > figure,
 .ck-content > p,
-.ck-content > pre {
-  margin: revert;
-}
-
+.ck-content > pre,
 .ck-content > ol,
-.ck-content > ul {
-  list-style: revert;
-  margin: revert;
-  padding: revert;
-}
+.ck-content > ul,
+.ck-content > table,
 
-.ck-content > table {
-  border-collapse: revert;
-}
-
-.ck-content > h1,
-.ck-content > h2,
-.ck-content > h3,
-.ck-content > h4,
-.ck-content > h5,
-.ck-content > h6 {
-  font-size: revert;
-  font-weight: revert;
-}
-
-.ck-content a {
-  text-decoration: underline;
-  color: #3b82f6;
-  font-weight: 500;
-}
+.ck-content a,
 
 .ck-content-output > blockquote,
 .ck-content-output > dl,
@@ -64,38 +37,13 @@
 .ck-content-output > hr,
 .ck-content-output > figure,
 .ck-content-output > p,
-.ck-content-output > pre {
-  margin: revert;
-}
-
+.ck-content-output > pre,
 .ck-content-output > ol,
-.ck-content-output > ul {
-  list-style: revert;
-  margin: revert;
-  padding: revert;
-}
+.ck-content-output > ul,
+.ck-content-output > table,
 
-.ck-content-output > table {
-  border-collapse: revert;
-}
 
-.ck-content-output > h1,
-.ck-content-output > h2,
-.ck-content-output > h3,
-.ck-content-output > h4,
-.ck-content-output > h5,
-.ck-content-output > h6 {
-  font-size: revert;
-  font-weight: revert;
-}
 
-.ck-content-output blockquote {
-    border-left: 5px solid #ccc;
-    font-style: italic;
-    margin-left: 0;
-    margin-right: 0;
-    overflow: hidden;
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-  
+.ck-content-output a {
+  color: inherit;
 }
