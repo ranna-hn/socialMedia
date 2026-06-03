@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Http\Resources\UserResource;
+use App\Http\Requests\StorePostRequest;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,6 +36,9 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => new UserResource($request->user()),
             ],
+
+            'attachmemtExtensions'=> StorePostRequest::$extensions,
+
             'ziggy' => [
                 'location' => $request->url(),
             ],

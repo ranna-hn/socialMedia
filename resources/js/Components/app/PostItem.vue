@@ -141,7 +141,7 @@ function openAttachment(ind) {
                             </div>
 
                             <!-- download -->
-                            <a :href="route('posts.download', attachment.id)"
+                            <a @click.stop :href="route('posts.download', attachment.id)"
                             class="z-20 opacity-0 group-hover:opacity-100 transition-all w-8 h-8 flex items-center justify-center text-gray-100 bg-gray-600 
                             rouded absolute right-1 top-2 cursor-pointer hover:bg-gray-800 duration-150 ease-in-out">
                                 <ArrowDownTrayIcon class="w-4 h-4" />
@@ -157,7 +157,7 @@ function openAttachment(ind) {
                                 <div class="flex flex-col justify-center items-center w-full h-full">
                             <PaperClipIcon class="w-10 h-10 mb-3 " />
 
-                                <medium>{{ attachment.name }}</medium>
+                                <span>{{ attachment.name }}</span>
 
                                 </div>
 
