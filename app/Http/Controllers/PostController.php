@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\PostAttachment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Enums\PostReactionEnum;
+use App\Models\PostReaction;
 
 
 class PostController extends Controller
@@ -146,4 +149,42 @@ class PostController extends Controller
         
         
         }
+
+
+        public function postReaction(Request $request, Post $post)
+        {
+            $data = $request->validate([
+                'reaction' => [Rule::enum(PostReactionEnum::class)]
+            ]);
+
+            $userId = Auth::id();
+
+            $reaction = PostReaction::where('user_id', $userId)->where('post_id', $post->id)->first();
+
+            if($reaction){
+                $hasReaction = false;
+                $reaction->delete();
+            } else {
+               $hasReaction = true; 
+            
+
+            PostReaction::create([
+                'post_id' => $post->id,
+                'user_id' => $userId,
+                'type' => $data['reaction']
+            ]);
+
+            }
+
+
+            $reactions = PostReaction::where('post_id', $post->id)->count();
+
+            return response([
+            'num_of_reactions' => $reactions,
+            'current_user_has_reaction' => $hasReaction,
+            ]);
+        }
+
+        
+
 }
