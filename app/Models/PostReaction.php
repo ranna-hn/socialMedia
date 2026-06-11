@@ -19,4 +19,14 @@ class PostReaction extends Model
         'user_id',
         'type'
     ];
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

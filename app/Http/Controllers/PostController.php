@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Enums\PostReactionEnum;
 use App\Models\PostReaction;
+use App\Models\User;
+use App\Support\AppNotification;
 
 
 class PostController extends Controller
@@ -26,9 +28,14 @@ class PostController extends Controller
         DB::beginTransaction();
 
         $allFilePaths = [];
+        $post = null;
 
         try{
-            $post= Post::create($data);
+            $post= Post::create([
+                'body' => $data['body'],
+                'user_id' => $data['user_id'],
+                'group_id' => $data['group_id'] ?? null,
+            ]);
 
         /**
          *  @var \Illuminate\Http\UploadedFile[] $file
@@ -59,6 +66,18 @@ class PostController extends Controller
           DB::rollBack();
           throw $e;
         }
+
+        if ($post && is_null($post->group_id)) {
+            foreach ($user->followers()->pluck('users.id') as $followerId) {
+                AppNotification::send(
+                    $followerId,
+                    'followed_user_posted',
+                    __('econature.notifications.followed_user_posted', ['username' => $user->username]),
+                    route('profile', $user->username),
+                    $user,
+                );
+            }
+        }
       
         return back();
 
@@ -79,7 +98,10 @@ class PostController extends Controller
         $allFilePaths = [];
 
         try{
-            $post->update($data);
+            $post->update([
+                'body' => $data['body'],
+                'group_id' => $data['group_id'] ?? $post->group_id,
+            ]);
 
             $deleted_ids = $data['deleted_file_ids'] ?? [];
 
@@ -130,8 +152,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $id = Auth::id();
-        if($post->user_id != $id){
+        if(! $this->canManagePost($post, Auth::user())){
             return response ("you don't have permission to delete this post", 403);
         }
 
@@ -185,6 +206,15 @@ class PostController extends Controller
             ]);
         }
 
-        
+        private function canManagePost(Post $post, ?User $user): bool
+        {
+            if (! $user) {
+                return false;
+            }
+
+            return $post->user_id === $user->id
+                || $user->isAdmin()
+                || $post->group?->isAdmin($user);
+        }
 
 }

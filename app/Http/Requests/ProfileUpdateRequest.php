@@ -18,7 +18,13 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255','regex:/^[\w\-\.]+$/i'],
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\w\-\.]+$/i',
+                Rule::unique(User::class)->ignore($this->user()->id),
+            ],
             'email' => [
                 'required',
                 'string',
@@ -35,5 +41,12 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'regex' => 'username can only contain alphanumeric characters, dashes and dots.',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'username' => $this->input('username') ?: $this->user()->username,
+        ]);
     }
 }

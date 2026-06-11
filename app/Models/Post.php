@@ -15,7 +15,12 @@ class Post extends Model
 
     protected $fillable =[
         'user_id',
+        'group_id',
         'body',
+    ];
+
+    protected $casts = [
+        'comments_count' => 'integer',
     ];
 
     public function user(): BelongsTo
@@ -37,5 +42,10 @@ class Post extends Model
     public function reactions(): HasMany
     {
         return $this->hasMany(PostReaction::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class)->latest();
     }
 }

@@ -10,6 +10,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         // Supprimer le trigger s'il existe déjà
         DB::unprepared('DROP TRIGGER IF EXISTS after_user_join_group');
 
@@ -28,8 +32,11 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::unprepared('DROP TRIGGER IF EXISTS after_user_join_group');
     }
 };
-
 

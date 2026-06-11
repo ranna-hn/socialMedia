@@ -7,9 +7,11 @@ import {XMarkIcon, PaperClipIcon, BookmarkIcon, ArrowUturnLeftIcon} from '@heroi
 import { useForm, usePage } from '@inertiajs/vue3'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { isImage } from '@/helpers';
+import { useI18n } from '@/i18n.js';
 
 
 const editor = ClassicEditor;
+const { t } = useI18n();
 
 const editorConfig = {
     toolbar: [
@@ -38,10 +40,14 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    groupId: {
+        type: [Number, String, null],
+        default: null,
+    },
     modelValue: Boolean
 })
 
-const attachmentExtensions  = usePage().props.attachmemtExtensions;
+const attachmentExtensions  = usePage().props.attachmentExtensions || usePage().props.attachmemtExtensions;
 
 
 /*
@@ -67,6 +73,7 @@ const emit = defineEmits(['update:modelValue','hide'])
 
 const form = useForm({
     body: '',
+    group_id: props.groupId,
     attachments: [],
     deleted_file_ids: [],
     _method:'POST',
@@ -86,6 +93,7 @@ const computedAttachments = computed(() => {
 watch(() => props.post, () => {
     console.log("this is triggered", props.post)
     form.body = props.post.body || ''
+    form.group_id = props.groupId || props.post.group?.id || null
     
 }   )
 
@@ -121,6 +129,7 @@ function submit()
     }
 
     form.attachments = attachmentFiles.value.map(myFile => myFile.file)
+    form.group_id = props.groupId || props.post.group?.id || null
     console.log(form)
     if (props.post.id){
         form._method='PUT'
@@ -184,10 +193,10 @@ async function onAttachmentChoose($event) {
         let error = null;
 
         if(invalidExtension){
-            error = 'Invalid file type';
+            error = t('post.invalid_file_type');
             
         } else if(invalidSize){
-            error = 'File size must not exceed 50 MB.';
+            error = t('post.max_file_size');
         }
 
         const myFile = {
@@ -282,7 +291,7 @@ function undoDelete(myFile){
                     as="h3"
                     class="flex items-center justify-between py-3 px-4 text-lg font-medium text-gray-900 bg-gray-100"
                 >
-                    {{ post.id ? 'Update Post' : 'Create Post' }}
+                    {{ post.id ? t('post.update_post') : t('post.create_post') }}
                     <button @click="closeModal" class="w-8 h-8 rounded-full hover:bg-black/10 transition flex items-center justify-center"> 
                         <XMarkIcon class="w-4 h-4" @click="closeModal" />
                     </button>
@@ -292,7 +301,7 @@ function undoDelete(myFile){
                     <ckeditor :editor="editor" v-model="form.body" :config="editorConfig" ></ckeditor>
 
                     <div v-if="showExtensionsText" class="border-l-4 border-lime-800 py-2 px-3 bg-lime-100 mt-3 txt-gray-800">
-                        Files must be one of the following extensions:
+                        {{ t('post.invalid_extensions') }}
                         <small>
                             {{ attachmentExtensions.join(',  ') }}
                         </small>
@@ -300,7 +309,7 @@ function undoDelete(myFile){
                     </div>
 
                     <div v-if="showSizeText" class="border-l-4 border-red-600 py-2 px-3 bg-red-100 mt-3 text-gray-800">
-                        File size must not exceed 50 MB.
+                        {{ t('post.max_file_size') }}
                     </div>
                 
                     <div class="grid gap-3 my-3" :class="[computedAttachments.length ===1 ? 'grid-cols-1' : 'grid-cols-2']">
@@ -313,7 +322,7 @@ function undoDelete(myFile){
 
 
                         <div v-if="myFile.deleted" class="absolute z-10 left-0 bottom-0 right-0 py-2 px-3 text-sm bg-black text-white flex justify-between items-center">
-                            to be deleted
+                            {{ t('post.to_be_deleted') }}
                             <ArrowUturnLeftIcon @click="undoDelete(myFile)" class="w-4 h-4 cursor-pointer"/>
                         </div>
 
@@ -368,7 +377,7 @@ function undoDelete(myFile){
                     @click="submit"
                     >
                     <BookmarkIcon class="w-4 h-4 mr-2" />
-                    submit
+                    {{ t('post.submit') }}
                     </button>
                     <button
                     type="button"
@@ -377,7 +386,7 @@ function undoDelete(myFile){
             focus-visible:outline-lime-300 relative"
                     >
                     <PaperClipIcon class="w-4 h-4 mr-2 cursor-pointer" />
-                    Attach Files
+                    {{ t('post.attach_files') }}
                     <input @click.stop @change="onAttachmentChoose" type="file" multiple class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer" />
                     </button>
                 </div>

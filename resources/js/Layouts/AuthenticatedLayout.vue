@@ -5,11 +5,18 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link , usePage} from '@inertiajs/vue3';
+import GlobalSearch from '@/Components/app/GlobalSearch.vue';
+import WeatherWidget from '@/Components/app/WeatherWidget.vue';
+import NotificationBell from '@/Components/app/NotificationBell.vue';
+import LanguageSwitcher from '@/Components/app/LanguageSwitcher.vue';
+import { useI18n } from '@/i18n.js';
 
 
 const showingNavigationDropdown = ref(false);
 
 const authUser = usePage().props.auth.user;
+const page = usePage();
+const { t } = useI18n();
 
 
 </script>
@@ -31,6 +38,7 @@ const authUser = usePage().props.auth.user;
                                         class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"
                                     />
                                 </Link>
+                                <WeatherWidget />
                             </div>
 
                             <!-- Navigation Links -->
@@ -40,7 +48,16 @@ const authUser = usePage().props.auth.user;
                             </div>
                         </div>
 
-                        <div class="hidden sm:ms-6 sm:flex sm:items-center">
+                        <div class="hidden flex-1 items-center justify-center px-6 md:flex">
+                            <GlobalSearch />
+                        </div>
+
+                        <div v-if="authUser" class="hidden items-center gap-2 sm:ms-3 sm:flex">
+                            <NotificationBell />
+                            <LanguageSwitcher />
+                        </div>
+
+                        <div class="hidden sm:ms-3 sm:flex sm:items-center">
                             <!-- Settings Dropdown -->
                             <div class="relative ms-3">
                                 <Dropdown v-if="authUser" align="right" width="48">
@@ -69,20 +86,20 @@ const authUser = usePage().props.auth.user;
 
                                     <template #content>
                                         <DropdownLink
-                                            :href="route('profile', {username:authUser.username})">
-                                            Profile
+                                            :href="route('profile', authUser.username)">
+                                            {{ t('nav.profile') }}
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            {{ t('nav.logout') }}
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
                                 <div v-else>
-                                    <Link :href="route('login')"> Login </Link>
+                                    <Link :href="route('login')"> {{ t('nav.login') }} </Link>
                                 </div>
                                 
                             </div>
@@ -156,20 +173,27 @@ const authUser = usePage().props.auth.user;
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile', {username:authUser.name})">
-                                Profile
+                            <div class="px-4 pb-3">
+                                <GlobalSearch />
+                            </div>
+                            <div v-if="showingNavigationDropdown" class="flex items-center gap-2 px-4 pb-3">
+                                <NotificationBell />
+                                <LanguageSwitcher />
+                            </div>
+                            <ResponsiveNavLink :href="route('profile', authUser.username)">
+                                {{ t('nav.profile') }}
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 :href="route('logout')"
                                 method="post"
                                 as="button"
                             >
-                                Log Out
+                                {{ t('nav.logout') }}
                             </ResponsiveNavLink>
                         </div>
                         </template>
                         <template v-else>
-                            Login button
+                            {{ t('nav.login') }}
                         </template>
                     </div>
                 </div>
@@ -187,6 +211,12 @@ const authUser = usePage().props.auth.user;
 
             <!-- Page Content -->
             <main class="flex-1 overflow-hidden">
+                <div
+                    v-if="page.props.flash?.success"
+                    class="mx-auto mt-3 max-w-4xl rounded-md bg-emerald-500 px-4 py-2 text-sm font-medium text-white"
+                >
+                    {{ page.props.flash.success }}
+                </div>
                 <slot />
             </main>
         </div>

@@ -37,7 +37,14 @@ class HandleInertiaRequests extends Middleware
                 'user' => new UserResource($request->user()),
             ],
 
+            'locale' => app()->getLocale(),
+            'translations' => fn () => __('econature.ui'),
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
             'attachmemtExtensions'=> StorePostRequest::$extensions,
+            'attachmentExtensions'=> StorePostRequest::$extensions,
 
             'ziggy' => [
                 'location' => $request->url(),

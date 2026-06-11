@@ -10,28 +10,3 @@ enum PostReactionEnum: string
     case Like = 'like';
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-?>

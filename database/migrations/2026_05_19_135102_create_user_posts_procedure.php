@@ -7,6 +7,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::unprepared('
             CREATE PROCEDURE GetUserPostsCount(IN userId BIGINT)
             BEGIN
@@ -19,7 +23,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::unprepared('DROP PROCEDURE IF EXISTS GetUserPostsCount');
     }
 };
-

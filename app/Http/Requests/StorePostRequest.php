@@ -5,7 +5,10 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Validator;
 use Illuminate\Validation\Rules\File;
+use App\Models\Group;
+use App\Models\GroupUser;
 
 class StorePostRequest extends FormRequest
 {
@@ -40,6 +43,35 @@ class StorePostRequest extends FormRequest
                 'max:'. (50 * 1024), 
             ],
             'user_id' => [ 'integer'],
+            'group_id' => ['nullable', 'integer', 'exists:groups,id'],
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator): void {
+                $groupId = $this->integer('group_id');
+
+                if (! $groupId) {
+                    return;
+                }
+
+                $group = Group::find($groupId);
+                $user = $this->user();
+
+                $canPost = $group && (
+                    $group->isAdmin($user)
+                    || $group->memberships()
+                        ->where('user_id', $user->id)
+                        ->where('status', GroupUser::STATUS_APPROVED)
+                        ->exists()
+                );
+
+                if (! $canPost) {
+                    $validator->errors()->add('group_id', __('econature.groups.not_member'));
+                }
+            },
         ];
     }
 
@@ -48,6 +80,7 @@ class StorePostRequest extends FormRequest
     {
         $this->merge([
             'user_id' => Auth::id(),
+            'group_id' => $this->input('group_id') ?: null,
             'body'=>$this->input('body') ?: '',
         ]);
     }

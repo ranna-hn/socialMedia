@@ -4,6 +4,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { useI18n } from '@/i18n.js';
 
 defineProps({
     mustVerifyEmail: {
@@ -15,6 +16,7 @@ defineProps({
 });
 
 const user = usePage().props.auth.user;
+const { t } = useI18n();
 
 const form = useForm({
     name: user.name,
@@ -27,11 +29,11 @@ const form = useForm({
     <section>
         <header>
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                Profile Information
+                {{ t('settings.profile_information') }}
             </h2>
 
             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                Update your account's profile information and email address.
+                {{ t('settings.profile_information_help') }}
             </p>
         </header>
 
@@ -40,7 +42,7 @@ const form = useForm({
             class="mt-6 space-y-6"
         >
             <div>
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" :value="t('settings.name')" />
 
                 <TextInput
                     id="name"
@@ -54,7 +56,7 @@ const form = useForm({
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
             <div>
-                <InputLabel for="username" value="Username" />
+                <InputLabel for="username" :value="t('settings.username')" />
 
                 <TextInput
                     id="username"
@@ -69,7 +71,7 @@ const form = useForm({
             </div>
 
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" :value="t('settings.email')" />
 
                 <TextInput
                     id="email"
@@ -85,14 +87,14 @@ const form = useForm({
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
                 <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">
-                    Your email address is unverified.
+                    {{ t('settings.email_unverified') }}
                     <Link
                         :href="route('verification.send')"
                         method="post"
                         as="button"
                         class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
                     >
-                        Click here to re-send the verification email.
+                        {{ t('settings.resend_verification') }}
                     </Link>
                 </p>
 
@@ -100,12 +102,12 @@ const form = useForm({
                     v-show="status === 'verification-link-sent'"
                     class="mt-2 text-sm font-medium text-green-600 dark:text-green-400"
                 >
-                    A new verification link has been sent to your email address.
+                    {{ t('settings.verification_sent') }}
                 </div>
             </div>
 
             <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                <PrimaryButton :disabled="form.processing">{{ t('settings.save') }}</PrimaryButton>
 
                 <Transition
                     enter-active-class="transition ease-in-out"
@@ -117,7 +119,7 @@ const form = useForm({
                         v-if="form.recentlySuccessful"
                         class="text-sm text-gray-600 dark:text-gray-400"
                     >
-                        Saved.
+                        {{ t('settings.saved') }}
                     </p>
                 </Transition>
             </div>

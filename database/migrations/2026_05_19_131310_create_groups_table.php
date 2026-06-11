@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('cover_path', 1024)->nullable();
             $table->string('thumbnail_path', 1024)->nullable();
             $table->boolean('auto_approval')->default(true);
+            $table->unsignedInteger('member_count')->default(0);
             $table->string('about', 255)->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('deleted_at')->nullable();

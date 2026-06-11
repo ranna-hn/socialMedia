@@ -2,9 +2,18 @@
 import { ref } from 'vue';
 import { usePage} from '@inertiajs/vue3';
 import PostModal from './PostModal.vue';
+import { useI18n } from '@/i18n.js';
 
 
 const authUser = usePage().props.auth.user;
+const { t } = useI18n();
+
+defineProps({
+    groupId: {
+        type: [Number, String, null],
+        default: null,
+    },
+});
 
 const showModal = ref(false);
 
@@ -29,7 +38,7 @@ function showCreatePostModal(){
         <div @click="showCreatePostModal" 
         class="py-2 px-3 border-2 rounded-md border-gray-300 text-gray-600 shadow-sm mb3 w-full" 
         :rows="1">
-            What's in Your mind?
+            {{ t('post.composer_placeholder') }}
         </div>
 
             <!-- <div class="flex gap-2 justify-center">
@@ -49,6 +58,6 @@ function showCreatePostModal(){
             </div> -->
 
 
-        <PostModal :post="newPost" v-model="showModal"/>
+        <PostModal :post="newPost" :group-id="groupId" v-model="showModal"/>
     </div>
 </template>
